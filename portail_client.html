@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail Client - Devis Express</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyan: #00B8D4;
+            --magenta: #E91E63;
+            --yellow: #FFC107;
+            --black: #1a1a1a;
+            --dark-gray: #2d2d2d;
+            --medium-gray: #5a5a5a;
+            --light-gray: #e8e8e8;
+            --white: #ffffff;
+            --green: #4CAF50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--black);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: var(--white);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .user-status {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--black);
+            border-left: 4px solid var(--cyan);
+            padding-left: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--medium-gray);
+            font-size: 0.95rem;
+        }
+
+        select, input[type="number"], input[type="text"], textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(0, 184, 212, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--magenta) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 184, 212, 0.4);
+        }
+
+        .btn-order {
+            background: linear-gradient(135deg, var(--green) 0%, #45a049 100%);
+        }
+
+        .btn-order:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+        }
+
+        .price-display {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .price-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price-unit {
+            font-size: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .detail-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 8px;
+            color: var(--black);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .urgency-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .urgency-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .urgency-btn.selected {
+            background: var(--cyan);
+            color: white;
+            border-color: var(--cyan);
+        }
+
+        .urgency-btn:hover {
+            border-color: var(--cyan);
+        }
+
+        .order-confirmation {
+            display: none;
+            background: var(--green);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .order-confirmation.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+            margin: 0.5rem 0;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: var(--medium-gray);
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--magenta) 100%);
+            color: var(--white);
+            border-color: transparent;
+        }
+
+        .option-group {
+            display: none;
+        }
+
+        .option-group.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>🎯 Portail Client VIP</h1>
+                <p style="color: var(--light-gray); margin-top: 0.5rem;">Calculez et commandez en un clic</p>
+            </div>
+            <div class="user-info">
+                <div class="user-name" id="user-name">Client Premium</div>
+                <div class="user-status">🌟 Statut VIP</div>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <div class="card">
+                <h2>📝 Nouveau devis</h2>
+                
+                <div class="form-group">
+                    <label for="product-type">Type de produit</label>
+                    <select id="product-type">
+                        <option value="">-- Sélectionner --</option>
+                        <option value="flyer">Flyers</option>
+                        <option value="carte">Cartes de visite</option>
+                        <option value="depliant">Dépliants 3 volets</option>
+                        <option value="entete">Papier à en-tête</option>
+                        <option value="brochure">Brochure couleur</option>
+                        <option value="livre">Livre N&B</option>
+                        <option value="affiches">Affiches A3/A3+</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Quantité</label>
+                    <input type="number" id="quantity" min="1" placeholder="Ex: 100">
+                </div>
+
+                <!-- Options Flyers -->
+                <div id="flyer-options" class="option-group">
+                    <div class="form-group">
+                        <label>Type d'impression</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="flyer-recto" name="flyer-type" value="recto" checked>
+                                <label for="flyer-recto">Recto</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="flyer-rv" name="flyer-type" value="recto-verso">
+                                <label for="flyer-rv">Recto/Verso</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Options Cartes -->
+                <div id="carte-options" class="option-group">
+                    <div class="form-group">
+                        <label>Type de finition</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="carte-standard" name="carte-type" value="standard" checked>
+                                <label for="carte-standard">Standard</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="carte-pellicule" name="carte-type" value="pellicule">
+                                <label for="carte-pellicule">Pelliculé</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="calculateQuote()">💰 Calculer le prix</button>
+
+                <div class="form-group" style="margin-top: 2rem;">
+                    <label for="notes">Notes / Instructions spéciales</label>
+                    <textarea id="notes" rows="3" placeholder="Détails supplémentaires pour votre commande..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Urgence de la commande</label>
+                    <div class="urgency-selector">
+                        <div class="urgency-btn" data-urgency="1" onclick="selectUrgency(1)">
+                            🟢 Normal<br><small>7-10 jours</small>
+                        </div>
+                        <div class="urgency-btn selected" data-urgency="3" onclick="selectUrgency(3)">
+                            🟡 Urgent<br><small>3-5 jours</small>
+                        </div>
+                        <div class="urgency-btn" data-urgency="5" onclick="selectUrgency(5)">
+                            🔴 Express<br><small>24-48h</small>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-order" id="order-btn" onclick="placeOrder()" disabled>
+                    🛒 Commander maintenant
+                </button>
+
+                <div class="order-confirmation" id="order-confirmation">
+                    <h3 style="margin-bottom: 0.5rem;">✅ Commande enregistrée !</h3>
+                    <div class="order-number">Commande #<span id="order-number">--</span></div>
+                    <p>Votre commande a été ajoutée à la file d'attente de production</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>💵 Récapitulatif</h2>
+                <div class="summary-box">
+                    <div class="price-label">Prix Total</div>
+                    <div class="price-display">
+                        <span id="total-price">—</span>
+                        <span class="price-unit">DT</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-row">
+                        <span class="detail-label">Produit</span>
+                        <span class="detail-value" id="sum-product">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Quantité</span>
+                        <span class="detail-value" id="sum-quantity">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Configuration</span>
+                        <span class="detail-value" id="sum-config">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Prix unitaire</span>
+                        <span class="detail-value" id="sum-unit-price">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuote = null;
+        let selectedUrgency = 3;
+        let prixData = null;
+
+        // Charger les prix
+        async function loadPrices() {
+            try {
+                const response = await fetch('prix_config.json');
+                prixData = await response.json();
+            } catch (error) {
+                console.error('Erreur chargement prix:', error);
+                alert('Impossible de charger les tarifs');
+            }
+        }
+
+        // Gestion affichage options
+        document.getElementById('product-type').addEventListener('change', function() {
+            const productType = this.value;
+            document.querySelectorAll('.option-group').forEach(opt => opt.classList.remove('active'));
+            
+            if (productType === 'flyer') {
+                document.getElementById('flyer-options').classList.add('active');
+            } else if (productType === 'carte') {
+                document.getElementById('carte-options').classList.add('active');
+            }
+            
+            document.getElementById('order-btn').disabled = true;
+            currentQuote = null;
+        });
+
+        function selectUrgency(level) {
+            selectedUrgency = level;
+            document.querySelectorAll('.urgency-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.closest('.urgency-btn').classList.add('selected');
+        }
+
+        function calculateQuote() {
+            if (!prixData) {
+                alert('Tarifs non chargés');
+                return;
+            }
+
+            const productType = document.getElementById('product-type').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+
+            if (!productType || !quantity) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            let totalPrice = 0;
+            let productName = '';
+            let config = '';
+
+            // Calcul simple pour les flyers
+            if (productType === 'flyer') {
+                const type = document.querySelector('input[name="flyer-type"]:checked').value;
+                const tarifs = type === 'recto' ? prixData.tarifs.flyer.recto : prixData.tarifs.flyer.rectoVerso;
+                
+                // Trouver le palier
+                let selectedTier = tarifs[0];
+                for (let tier of tarifs) {
+                    if (quantity >= tier.qty) {
+                        selectedTier = tier;
+                    }
+                }
+                
+                totalPrice = (selectedTier.price / selectedTier.qty) * quantity;
+                productName = 'Flyers A4';
+                config = type === 'recto' ? 'Recto' : 'Recto/Verso';
+            }
+            // Calcul pour les cartes
+            else if (productType === 'carte') {
+                const type = document.querySelector('input[name="carte-type"]:checked').value;
+                const tarifs = type === 'standard' ? prixData.tarifs.carte.recto : prixData.tarifs.carte.pellicule;
+                
+                let selectedTier = tarifs[0];
+                for (let tier of tarifs) {
+                    if (quantity >= tier.qty) {
+                        selectedTier = tier;
+                    }
+                }
+                
+                totalPrice = (selectedTier.price / selectedTier.qty) * quantity;
+                productName = 'Cartes de visite';
+                config = type === 'standard' ? 'Standard' : 'Pelliculé';
+            }
+            // Autres produits...
+            else {
+                alert('Ce produit n\'est pas encore configuré dans le portail client');
+                return;
+            }
+
+            // Mise à jour affichage
+            document.getElementById('total-price').textContent = totalPrice.toFixed(2);
+            document.getElementById('sum-product').textContent = productName;
+            document.getElementById('sum-quantity').textContent = quantity;
+            document.getElementById('sum-config').textContent = config;
+            document.getElementById('sum-unit-price').textContent = (totalPrice / quantity).toFixed(3) + ' DT';
+
+            // Activer bouton commander
+            document.getElementById('order-btn').disabled = false;
+
+            // Sauvegarder le devis
+            currentQuote = {
+                productType,
+                productName,
+                quantity,
+                config,
+                totalPrice,
+                unitPrice: totalPrice / quantity
+            };
+        }
+
+        function placeOrder() {
+            if (!currentQuote) {
+                alert('Veuillez d\'abord calculer un devis');
+                return;
+            }
+
+            const notes = document.getElementById('notes').value;
+
+            // Créer la commande
+            const order = {
+                id: 'CMD-' + Date.now(),
+                client_id: 'CLIENT_VIP_001', // À remplacer par vrai ID
+                client_name: document.getElementById('user-name').textContent,
+                ...currentQuote,
+                notes,
+                urgency: selectedUrgency,
+                date_commande: new Date().toISOString(),
+                statut: 'en_attente',
+                ordre_production: null
+            };
+
+            // Sauvegarder dans localStorage (temporaire - à remplacer par API)
+            let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            // Afficher confirmation
+            document.getElementById('order-number').textContent = order.id;
+            document.getElementById('order-confirmation').classList.add('show');
+            document.getElementById('order-btn').disabled = true;
+
+            // Réinitialiser après 3 secondes
+            setTimeout(() => {
+                document.getElementById('order-confirmation').classList.remove('show');
+                resetForm();
+            }, 3000);
+        }
+
+        function resetForm() {
+            document.getElementById('product-type').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('notes').value = '';
+            document.getElementById('total-price').textContent = '—';
+            document.getElementById('sum-product').textContent = '—';
+            document.getElementById('sum-quantity').textContent = '—';
+            document.getElementById('sum-config').textContent = '—';
+            document.getElementById('sum-unit-price').textContent = '—';
+            document.getElementById('order-btn').disabled = true;
+            currentQuote = null;
+        }
+
+        // Charger les prix au démarrage
+        loadPrices();
+    </script>
+</body>
+</html>
